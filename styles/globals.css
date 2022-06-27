@@ -23,3 +23,8 @@ a {
 .primary-button {
     @apply rounded py-2 px-4 shadow outline-none  bg-amber-300 hover:bg-amber-400 active:bg-amber-500;
 }
+input,
+select,
+textarea {
+    @apply rounded border p-2 outline-none ring-indigo-300 focus:ring;
+}
