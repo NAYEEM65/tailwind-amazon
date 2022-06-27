@@ -1,20 +1,47 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Layout from '../components/Layout';
 import Link from 'next/link';
 import { useForm } from 'react-hook-form';
+import { signIn, useSession } from 'next-auth/react';
 import { toast } from 'react-toastify';
+import { getError } from '../utils/error';
+import { useRouter } from 'next/router';
 
 const Login = () => {
+    const { data: session } = useSession();
+    const router = useRouter();
+    const { redirect } = router.query;
     const {
         register,
         handleSubmit,
         formState: { errors },
     } = useForm();
-    const submitHandler = ({ email, password }) => {
+    const submitHandler = async ({ email, password }) => {
+        try {
+            const result = await signIn('credentials', {
+                redirect: false,
+                email,
+                password,
+            });
+            if (result.error) {
+                toast.error(getError(result.error), {
+                    position: toast.POSITION.TOP_CENTER,
+                });
+            }
+        } catch (error) {
+            toast.error(getError(error), {
+                position: toast.POSITION.TOP_CENTER,
+            });
+        }
         toast.success(`Email: ${email}, Password: ${password} has been submitted.`, {
             position: toast.POSITION.TOP_CENTER,
         });
     };
+    useEffect(() => {
+        if (session?.user) {
+            router.push(redirect || '/');
+        }
+    }, [router, session, redirect]);
     return (
         <Layout title="Login">
             <form
@@ -63,7 +90,9 @@ const Login = () => {
                 </div>
                 <div className="mb-4">
                     Don&apos;t have an account? &nbsp;
-                    <Link href="/register">Register</Link>
+                    <Link href="/register">
+                        <a className="text-blue-500">Register Now</a>
+                    </Link>
                 </div>
             </form>
         </Layout>
