@@ -27,15 +27,16 @@ const Login = () => {
                 toast.error(getError(result.error), {
                     position: toast.POSITION.TOP_CENTER,
                 });
+            } else {
+                toast.success('Succesfully logged in.', {
+                    position: toast.POSITION.TOP_CENTER,
+                });
             }
         } catch (error) {
             toast.error(getError(error), {
                 position: toast.POSITION.TOP_CENTER,
             });
         }
-        toast.success(`Email: ${email}, Password: ${password} has been submitted.`, {
-            position: toast.POSITION.TOP_CENTER,
-        });
     };
     useEffect(() => {
         if (session?.user) {
